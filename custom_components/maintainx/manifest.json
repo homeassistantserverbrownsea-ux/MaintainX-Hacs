@@ -1,12 +1,10 @@
 {
   "domain": "maintainx",
   "name": "MaintainX",
-  "version": "0.1.0",
-  "documentation": "https://github.com/homeassistantserverbrownsea-ux/MaintainX-Hacs",
-  "requirements": [
-    "aiohttp"
-  ],
-  "dependencies": [],
   "codeowners": ["@homeassistantserverbrownsea-ux"],
+  "config_flow": true,
+  "documentation": "https://github.com/homeassistantserverbrownsea-ux/MaintainX-Hacs",
+  "requirements": ["aiohttp"],
+  "version": "0.1.0",
   "iot_class": "cloud_polling"
 }
