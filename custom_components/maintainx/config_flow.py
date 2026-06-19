@@ -16,20 +16,17 @@ class MaintainXConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for MaintainX."""
 
     VERSION = 1
-    MINOR_VERSION = 1
 
     async def async_step_user(self, user_input=None) -> FlowResult:
-        """Handle the initial step."""
+        """Handle the initial step - User initiated config."""
         errors = {}
         
         if user_input is not None:
             api_key = user_input.get(CONF_API_KEY, "").strip()
             
-            # Basic validation
             if not api_key:
                 errors["base"] = "invalid_api_key"
             else:
-                # Create entry with the API key
                 await self.async_set_unique_id("maintainx")
                 self._abort_if_unique_id_configured()
                 
@@ -38,15 +35,30 @@ class MaintainXConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data={CONF_API_KEY: api_key}
                 )
 
-        schema = vol.Schema({
-            vol.Required(CONF_API_KEY): str
+        data_schema = vol.Schema({
+            vol.Required(CONF_API_KEY, description={"suggested_value": ""}): str,
         })
         
         return self.async_show_form(
             step_id="user",
-            data_schema=schema,
+            data_schema=data_schema,
             errors=errors,
-            description_placeholders={
-                "docs_url": "https://github.com/homeassistantserverbrownsea-ux/MaintainX-Hacs"
-            }
         )
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Get the options flow for this config entry."""
+        return MaintainXOptionsFlowHandler(config_entry)
+
+
+class MaintainXOptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle options for MaintainX."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None) -> FlowResult:
+        """Manage the options."""
+        return self.async_show_form(step_id="init")
